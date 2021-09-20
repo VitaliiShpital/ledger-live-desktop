@@ -34,6 +34,7 @@ import type { ThemedComponent } from "~/renderer/styles/StyleProvider";
 import { isCurrencySupported } from "~/renderer/screens/exchange/config";
 import { useHistory } from "react-router-dom";
 import IconWalletConnect from "~/renderer/icons/WalletConnect";
+import IconCoins from "~/renderer/icons/ClaimReward";
 import Graph from "~/renderer/icons/Graph";
 import { setTrackingSource } from "~/renderer/analytics/TrackPage";
 import useTheme from "~/renderer/hooks/useTheme";
@@ -142,6 +143,12 @@ const AccountHeaderActions = ({ account, parentAccount, openModal, t }: Props) =
     openModal("MODAL_WALLETCONNECT_PASTE_LINK", { account });
   }, [openModal, account]);
 
+  const onPlatformStake = useCallback(() => {
+    setTrackingSource("account header actions");
+
+    history.push({ pathname: "/platform/lido", state: { accountId: account.id } });
+  }, [history, account]);
+
   const onSend = useCallback(() => {
     openModal("MODAL_SEND", { parentAccount, account });
   }, [parentAccount, account, openModal]);
@@ -186,6 +193,13 @@ const AccountHeaderActions = ({ account, parentAccount, openModal, t }: Props) =
             icon: IconWalletConnect,
             label: <Trans i18nKey="walletconnect.titleAccount" />,
           },
+          {
+            key: "Stake",
+            onClick: onPlatformStake,
+            event: "Eth Stake Account Button",
+            icon: IconCoins,
+            label: <Trans i18nKey="account.stake" values={{ currency: currency.name }} />,
+          },
         ]
       : []),
   ];
@@ -212,6 +226,7 @@ const AccountHeaderActions = ({ account, parentAccount, openModal, t }: Props) =
   return (
     <Box horizontal alignItems="center" justifyContent="flex-end" flow={2} mt={15}>
       {!isAccountEmpty(account) ? <NonEmptyAccountHeader /> : null}
+
       <Tooltip content={t("stars.tooltip")}>
         <Star
           accountId={account.id}
