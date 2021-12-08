@@ -1,5 +1,3 @@
-// @flow
-
 import React, { PureComponent } from "react";
 import noop from "lodash/noop";
 import { Button as BaseButton } from "@ledgerhq/react-ui";
